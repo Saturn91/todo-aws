@@ -1,0 +1,125 @@
+/* Reset some default styles */
+body,
+ul,
+li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+h2 {
+  display: flex;
+  justify-content: center;
+}
+/* Set a background color and font for the entire app */
+body {
+  background-color: #f4f4f4;
+  font-family: Arial, sans-serif;
+}
+.img {
+  display: flex;
+  justify-content: center;
+  height: 300px;
+  width: 300px;
+  margin-top: 50px;
+  align-items: center;
+  margin-left: 600px;
+}
+/* Header styles */
+header {
+  background-color: #6d5390;
+  color: #000000;
+  padding: 20px;
+
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+header h1 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+/* Todo List container */
+.todo-container {
+  max-width: 400px;
+  margin: 20px auto;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Todo item styles */
+.todo-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+
+.todo-item .task {
+  flex: 1;
+  font-size: 1.2em;
+}
+
+.todo-item .delete-button {
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background-color 0.3s;
+}
+
+.todo-item .delete-button:hover {
+  background-color: #c0392b;
+}
+
+.loadingSpinner {
+  display: flex;
+  justify-content: center;
+  margin-top: 100px;
+}
+
+/* Add todo input and button styles */
+.add-todo {
+  display: flex;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.add-todo input[type="text"] {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 3px;
+  font-size: 1.3em;
+}
+
+.add-todo button {
+  background-color: #27ae60;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  margin-left: 10px;
+  border-radius: 3px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-todo button:hover {
+  background-color: #219d54;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 600px) {
+  .todo-container {
+    max-width: 100%;
+  }
+}
