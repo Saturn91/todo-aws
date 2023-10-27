@@ -8,10 +8,9 @@ export const getTodo = async () => {
     if (!response.ok) {
       throw new Error("oops somenting went wrong!");
     }
-    const data = await response.json();
-    return JSON.parse(data.body);
+    return response;
   } catch (error) {
-    return error.message;
+    return error;
   }
 };
 
@@ -35,7 +34,7 @@ export const postTodo = async (todo) => {
 
     return response;
   } catch (error) {
-    return error.message;
+    return error;
   }
 };
 
@@ -51,14 +50,13 @@ export const deleteTodo = async (todoToDelete) => {
         todo: todoToDelete.todo,
       }),
     });
-    if (!response.ok) {
-      throw new Error("Delete request failed");
+    if (response.ok) {
+      console.log(`successfully deleted "${todoToDelete.todo}"`);
     }
-    console.log(`successfully deleted "${todoToDelete.todo}"`);
 
-    return todoToDelete;
+    return response;
   } catch (error) {
-    return error.message;
+    return error;
   }
 };
 
@@ -81,6 +79,6 @@ export const patchTodo = async (todoToUpdate) => {
 
     return response;
   } catch (error) {
-    return error.message;
+    return error;
   }
 };

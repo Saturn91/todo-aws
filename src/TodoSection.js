@@ -1,35 +1,19 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import TodoList from "./components/TodoList";
 import { MdSwitchAccessShortcutAdd } from "react-icons/md";
 import { LiaPoopSolid } from "react-icons/lia";
 import { FidgetSpinner } from "react-loader-spinner";
 import IconError from "./IconError.svg";
 import uuid from "react-uuid";
+import { TodoContext } from "./App";
+import { getTodo } from "./api/apiRequests";
 
 const TodoSection = () => {
   const [todo, setTodo] = useState("");
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [todos, setTodos] = useState([]);
   const newUuid = uuid();
-
-  const getTodo = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(
-        "https://m7xf5hxi5i.execute-api.us-east-1.amazonaws.com/dev"
-      );
-      if (!response.ok) {
-        throw new Error("oops somenting went wrong!");
-      }
-      const data = await response.json();
-      setTodos(JSON.parse(data.body));
-    } catch (error) {
-      setError(error.message);
-    }
-    setIsLoading(false);
-  }, []);
+  const [todos, setTodos] = useContext(TodoContext);
 
   const postTodo = async () => {
     setError(null);
@@ -64,39 +48,12 @@ const TodoSection = () => {
     }
     getTodo();
   };
-  const deleteTodo = async (todoToDelete) => {
-    setError(null);
-    try {
-      const response = await fetch(
-        `https://m7xf5hxi5i.execute-api.us-east-1.amazonaws.com/dev`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ID: todoToDelete.ID,
-            todo: todoToDelete.todo,
-          }),
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Delete request failed");
-      }
-      setTodos((prevTodos) =>
-        prevTodos.filter((item) => item.ID !== todoToDelete.ID)
-      );
-      console.log(`successfully deleted "${todoToDelete.todo}"`);
-    } catch (error) {
-      setError(error.message);
-    }
-  };
 
   const patchTodo = async (todoToUpdate) => {
     setError(null);
     try {
       todoToUpdate.isDone = !todoToUpdate.isDone;
-      setTodos([...todos]);
+      /*setTodos([...todos]);*/
       const response = await fetch(
         `https://m7xf5hxi5i.execute-api.us-east-1.amazonaws.com/dev`,
         {
@@ -124,8 +81,18 @@ const TodoSection = () => {
   };
 
   useEffect(() => {
-    getTodo();
-  }, [getTodo]);
+    const load = async () => {
+      const response = await getTodo();
+      if (response.ok) {
+        const data = await response.json();
+        setTodos(JSON.parse(data.body));
+      } else {
+        setError(response.error);
+      }
+    };
+
+    load();
+  }, [setTodos]);
 
   const changeHandler = (event) => {
     setTodo(event.target.value);
@@ -161,7 +128,6 @@ const TodoSection = () => {
         <div className="todo-container">
           <h3>todo:</h3>
           <TodoList
-            onDelete={(todoToDelete) => deleteTodo(todoToDelete)}
             toggleCheckbox={(test) => patchTodo(test)}
             todos={newTodos}
           />
@@ -169,7 +135,6 @@ const TodoSection = () => {
         <div className="todo-container">
           <h3>dones:</h3>
           <TodoList
-            onDelete={(todoToDelete) => deleteTodo(todoToDelete)}
             toggleCheckbox={(test) => patchTodo(test)}
             todos={doneTodos}
           />
