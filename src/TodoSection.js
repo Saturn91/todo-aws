@@ -51,7 +51,7 @@ const TodoSection = () => {
 
   if (error) {
     // eslint-disable-next-line jsx-a11y/alt-text
-    content = <img className="img" src={IconError} />;
+    return <img className="img" src={IconError} />;
   }
 
   const inputField = (
@@ -60,14 +60,19 @@ const TodoSection = () => {
       <div className="add-todo">
         <input onChange={changeHandler} value={todo} />
         <button
-          onClick={() => {
+          onClick={async () => {
             const newTodo = {
               ID: uuid(),
               todo: todo,
               isDone: false,
             };
-            postTodo(newTodo);
-            setTodos([...todos, newTodo]);
+            //optimistic update
+            const oldTodos = [...todos];
+            setTodos([...oldTodos, newTodo]);
+            const response = await postTodo(newTodo);
+            if (!response.ok) {
+              setError(response.message);
+            }
           }}
         >
           <MdSwitchAccessShortcutAdd />
