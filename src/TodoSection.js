@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import TodoItem from "./TodoItem";
+import TodoList from "./TodoList";
 import { MdSwitchAccessShortcutAdd } from "react-icons/md";
 import { LiaPoopSolid } from "react-icons/lia";
 import { FidgetSpinner } from "react-loader-spinner";
@@ -93,7 +93,7 @@ const TodoSection = () => {
   };
 
   const patchTodo = async (todoToUpdate) => {
-    setError(null)
+    setError(null);
     try {
       todoToUpdate.isDone = !todoToUpdate.isDone;
       setTodos([...todos]);
@@ -112,7 +112,7 @@ const TodoSection = () => {
         }
       );
 
-      console.log(response,"response")
+      console.log(response, "response");
       if (!response.ok) {
         throw new Error("Update request failed");
       }
@@ -160,7 +160,7 @@ const TodoSection = () => {
         {inputField}
         <div className="todo-container">
           <h3>todo:</h3>
-          <TodoItem
+          <TodoList
             onDelete={(todoToDelete) => deleteTodo(todoToDelete)}
             toggleCheckbox={(test) => patchTodo(test)}
             todos={newTodos}
@@ -168,7 +168,7 @@ const TodoSection = () => {
         </div>
         <div className="todo-container">
           <h3>dones:</h3>
-          <TodoItem
+          <TodoList
             onDelete={(todoToDelete) => deleteTodo(todoToDelete)}
             toggleCheckbox={(test) => patchTodo(test)}
             todos={doneTodos}

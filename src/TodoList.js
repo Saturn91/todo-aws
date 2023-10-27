@@ -1,7 +1,7 @@
 import React from "react";
 import { BsFillTrash3Fill } from "react-icons/bs";
 
-const TodoItem = ({ todos, toggleCheckbox, onDelete }) => {
+const ToDoList = ({ todos, toggleCheckbox, onDelete }) => {
   return (
     <ul>
       {!!todos.length &&
@@ -30,4 +30,4 @@ const TodoItem = ({ todos, toggleCheckbox, onDelete }) => {
   );
 };
 
-export default TodoItem;
+export default ToDoList;
