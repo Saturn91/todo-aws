@@ -1,5 +1,5 @@
 import React from "react";
-import ToDoItem from "./components/ToDoItem";
+import ToDoItem from "./ToDoItem";
 
 const ToDoList = ({ todos, toggleCheckbox, onDelete }) => {
   return (

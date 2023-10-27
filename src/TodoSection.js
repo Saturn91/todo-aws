@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import TodoList from "./TodoList";
+import TodoList from "./components/TodoList";
 import { MdSwitchAccessShortcutAdd } from "react-icons/md";
 import { LiaPoopSolid } from "react-icons/lia";
 import { FidgetSpinner } from "react-loader-spinner";
