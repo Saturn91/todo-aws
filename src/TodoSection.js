@@ -41,8 +41,6 @@ const TodoSection = () => {
     setActiveTodos(todos.filter((todo) => !todo.isDone));
   }, [todos]);
 
-  let content;
-
   if (error) {
     // eslint-disable-next-line jsx-a11y/alt-text
     return <img className="img" src={IconError} />;
