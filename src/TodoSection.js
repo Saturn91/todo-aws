@@ -1,15 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
 import TodoList from "./components/TodoList";
-import { MdSwitchAccessShortcutAdd } from "react-icons/md";
 import { LiaPoopSolid } from "react-icons/lia";
 import { FidgetSpinner } from "react-loader-spinner";
 import IconError from "./IconError.svg";
 import { TodoContext } from "./App";
-import { getTodo, postTodo } from "./api/apiRequests";
-import uuid from "react-uuid";
+import { getTodo } from "./api/apiRequests";
+import ToDoForm from "./components/ToDoForm";
 
 const TodoSection = () => {
-  const [todo, setTodo] = useState("");
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [todos, setTodos] = useContext(TodoContext);
@@ -43,10 +41,6 @@ const TodoSection = () => {
     setActiveTodos(todos.filter((todo) => !todo.isDone));
   }, [todos]);
 
-  const changeHandler = (event) => {
-    setTodo(event.target.value);
-  };
-
   let content;
 
   if (error) {
@@ -54,37 +48,10 @@ const TodoSection = () => {
     return <img className="img" src={IconError} />;
   }
 
-  const inputField = (
-    <>
-      <h2>Please add some todos</h2>
-      <div className="add-todo">
-        <input onChange={changeHandler} value={todo} />
-        <button
-          onClick={async () => {
-            const newTodo = {
-              ID: uuid(),
-              todo: todo,
-              isDone: false,
-            };
-            //optimistic update
-            const oldTodos = [...todos];
-            setTodos([...oldTodos, newTodo]);
-            const response = await postTodo(newTodo);
-            if (!response.ok) {
-              setError(response.message);
-            }
-          }}
-        >
-          <MdSwitchAccessShortcutAdd />
-        </button>
-      </div>
-    </>
-  );
-
   if (todos.length > 0) {
     content = (
       <>
-        {inputField}
+        <ToDoForm setError={setError} />
         <div className="todo-container">
           <h3>todo:</h3>
           <TodoList todos={activeTodos} />
@@ -99,7 +66,7 @@ const TodoSection = () => {
   } else if (todos.length === 0 && !error) {
     content = (
       <>
-        {inputField}
+        <ToDoForm setError={setError} />
         <h1 className="loadingSpinner">
           Found no todos
           <LiaPoopSolid />
