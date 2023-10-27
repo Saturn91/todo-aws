@@ -1,16 +1,26 @@
 import React, { useContext } from "react";
 import { BsFillTrash3Fill } from "react-icons/bs";
-import { deleteTodo } from "../api/apiRequests";
-import { TodoContext } from "../App";
+import { deleteTodo, patchTodo } from "../api/apiRequests";
+import { ApiStateContext, TodoContext } from "../App";
 
-const ToDoItem = ({ todo, toggleCheckbox }) => {
+const ToDoItem = ({ todo }) => {
   const [todos, setTodos] = useContext(TodoContext);
+  // eslint-disable-next-line no-unused-vars
+  const [_, setApiState] = useContext(ApiStateContext);
 
   return (
     <li key={todo.ID} className="todo-item">
       <input
         checked={todo.isDone}
-        onChange={() => toggleCheckbox(todo)}
+        onChange={async () => {
+          patchTodo({
+            ...todo,
+            isDone: !todo.isDone,
+          });
+
+          todo.isDone = !todo.isDone;
+          setTodos([...todos]);
+        }}
         type="checkbox"
       />
       <p
@@ -26,6 +36,7 @@ const ToDoItem = ({ todo, toggleCheckbox }) => {
           if (!response.ok) {
             console.error("something went wrong...");
             setTodos({ ...todos, todo });
+            setApiState({ error: response.message });
           }
         }}
         className="delete-button"

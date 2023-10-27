@@ -1,5 +1,3 @@
-import uuid from "react-uuid";
-
 const awsURL = "https://m7xf5hxi5i.execute-api.us-east-1.amazonaws.com/dev";
 
 export const getTodo = async () => {
@@ -15,18 +13,13 @@ export const getTodo = async () => {
 };
 
 export const postTodo = async (todo) => {
-  if (todo.trim().length === "") {
+  if (todo.todo.trim().length === "") {
     return "Todo description cannot be empty";
   }
   try {
-    const newTodoData = {
-      ID: uuid(),
-      todo: todo,
-      isDone: false,
-    };
     const response = await fetch(awsURL, {
       method: "POST",
-      body: JSON.stringify(newTodoData),
+      body: JSON.stringify(todo),
       headers: {
         "Content-Type": "application/json",
       },
@@ -62,7 +55,6 @@ export const deleteTodo = async (todoToDelete) => {
 
 export const patchTodo = async (todoToUpdate) => {
   try {
-    todoToUpdate.isDone = !todoToUpdate.isDone;
     const response = await fetch(awsURL, {
       method: "PATCH",
       headers: {

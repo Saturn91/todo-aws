@@ -1,84 +1,25 @@
-import React, { useEffect, useState, useCallback, useContext } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import TodoList from "./components/TodoList";
 import { MdSwitchAccessShortcutAdd } from "react-icons/md";
 import { LiaPoopSolid } from "react-icons/lia";
 import { FidgetSpinner } from "react-loader-spinner";
 import IconError from "./IconError.svg";
-import uuid from "react-uuid";
 import { TodoContext } from "./App";
-import { getTodo } from "./api/apiRequests";
+import { getTodo, postTodo } from "./api/apiRequests";
+import uuid from "react-uuid";
 
 const TodoSection = () => {
   const [todo, setTodo] = useState("");
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const newUuid = uuid();
   const [todos, setTodos] = useContext(TodoContext);
+  const [doneTodos, setDoneTodos] = useState(
+    todos.filter((todo) => todo.isDone)
+  );
 
-  const postTodo = async () => {
-    setError(null);
-    if (todo.trim().length === "") {
-      setError("Todo description cannot be empty");
-      return;
-    }
-    try {
-      const newTodoData = {
-        ID: newUuid,
-        todo: todo,
-        isDone: false,
-      };
-      const response = await fetch(
-        "https://m7xf5hxi5i.execute-api.us-east-1.amazonaws.com/dev",
-        {
-          method: "POST",
-          body: JSON.stringify(newTodoData),
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-      console.log(`successfully posted "${newTodoData.todo}"`);
-      setTodo("");
-    } catch (error) {
-      setError(error.message);
-    }
-    getTodo();
-  };
-
-  const patchTodo = async (todoToUpdate) => {
-    setError(null);
-    try {
-      todoToUpdate.isDone = !todoToUpdate.isDone;
-      /*setTodos([...todos]);*/
-      const response = await fetch(
-        `https://m7xf5hxi5i.execute-api.us-east-1.amazonaws.com/dev`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ID: todoToUpdate.ID,
-            todo: todoToUpdate.todo,
-            isDone: todoToUpdate.isDone,
-          }),
-        }
-      );
-
-      console.log(response, "response");
-      if (!response.ok) {
-        throw new Error("Update request failed");
-      }
-      console.log(todoToUpdate, "todo to update ");
-      console.log(`successfully updated "${todoToUpdate.todo}"`);
-    } catch (error) {
-      setError(error.message);
-    }
-  };
+  const [activeTodos, setActiveTodos] = useState(
+    todos.filter((todo) => !todo.isDone)
+  );
 
   useEffect(() => {
     const load = async () => {
@@ -94,13 +35,14 @@ const TodoSection = () => {
     load();
   }, [setTodos]);
 
+  useEffect(() => {
+    setDoneTodos(todos.filter((todo) => !!todo.isDone));
+    setActiveTodos(todos.filter((todo) => !todo.isDone));
+  }, [todos]);
+
   const changeHandler = (event) => {
     setTodo(event.target.value);
   };
-  const doneTodos = todos.filter(
-    (notDoneTodos) => notDoneTodos.isDone === true
-  );
-  const newTodos = todos.filter((todo) => todo.isDone === false);
 
   let content;
 
@@ -114,7 +56,17 @@ const TodoSection = () => {
       <h2>Please add some todos</h2>
       <div className="add-todo">
         <input onChange={changeHandler} value={todo} />
-        <button onClick={postTodo}>
+        <button
+          onClick={() => {
+            const newTodo = {
+              ID: uuid(),
+              todo: todo,
+              isDone: false,
+            };
+            postTodo(newTodo);
+            setTodos([...todos, newTodo]);
+          }}
+        >
           <MdSwitchAccessShortcutAdd />
         </button>
       </div>
@@ -127,17 +79,12 @@ const TodoSection = () => {
         {inputField}
         <div className="todo-container">
           <h3>todo:</h3>
-          <TodoList
-            toggleCheckbox={(test) => patchTodo(test)}
-            todos={newTodos}
-          />
+          <TodoList todos={activeTodos} />
         </div>
+
         <div className="todo-container">
           <h3>dones:</h3>
-          <TodoList
-            toggleCheckbox={(test) => patchTodo(test)}
-            todos={doneTodos}
-          />
+          <TodoList todos={doneTodos} />
         </div>
       </>
     );
