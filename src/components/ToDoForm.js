@@ -12,35 +12,41 @@ const ToDoForm = ({ setError }) => {
     setTodo(event.target.value);
   };
 
+  const submit = async () => {
+    const newTodo = {
+      ID: uuid(),
+      todo: todo,
+      isDone: false,
+    };
+    //optimistic update
+    const oldTodos = [...todos];
+    setTodos([...oldTodos, newTodo]);
+
+    // reset form
+    setTodo("");
+
+    const response = await postTodo(newTodo);
+    if (!response.ok) {
+      setError(response.message);
+    }
+  };
+
   return (
-    <>
+    <form
+      //using submit allows input on enter and on "button type = 'submit'"
+      onSubmit={(e) => {
+        e.preventDefault(); //do not reload page!
+        submit();
+      }}
+    >
       <h2>Please add some todos</h2>
       <div className="add-todo">
-        <input onChange={changeHandler} value={todo} />
-        <button
-          onClick={async () => {
-            const newTodo = {
-              ID: uuid(),
-              todo: todo,
-              isDone: false,
-            };
-            //optimistic update
-            const oldTodos = [...todos];
-            setTodos([...oldTodos, newTodo]);
-
-            // reset form
-            setTodo("");
-
-            const response = await postTodo(newTodo);
-            if (!response.ok) {
-              setError(response.message);
-            }
-          }}
-        >
+        <input onChange={changeHandler} value={todo} required />
+        <button type="submit">
           <MdSwitchAccessShortcutAdd />
         </button>
       </div>
-    </>
+    </form>
   );
 };
 

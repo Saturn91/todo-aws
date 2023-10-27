@@ -48,34 +48,8 @@ const TodoSection = () => {
     return <img className="img" src={IconError} />;
   }
 
-  if (todos.length > 0) {
-    content = (
-      <>
-        <ToDoForm setError={setError} />
-        <div className="todo-container">
-          <h3>todo:</h3>
-          <TodoList todos={activeTodos} />
-        </div>
-
-        <div className="todo-container">
-          <h3>dones:</h3>
-          <TodoList todos={doneTodos} />
-        </div>
-      </>
-    );
-  } else if (todos.length === 0 && !error) {
-    content = (
-      <>
-        <ToDoForm setError={setError} />
-        <h1 className="loadingSpinner">
-          Found no todos
-          <LiaPoopSolid />
-        </h1>
-      </>
-    );
-  }
   if (isLoading) {
-    content = (
+    return (
       <div className="loadingSpinner">
         <FidgetSpinner
           visible={true}
@@ -91,11 +65,32 @@ const TodoSection = () => {
     );
   }
 
-  return (
-    <>
-      <div>{content}</div>
-    </>
-  );
+  if (todos.length > 0) {
+    return (
+      <>
+        <ToDoForm setError={setError} />
+        <div className="todo-container">
+          <h3>todo:</h3>
+          <TodoList todos={activeTodos} />
+        </div>
+
+        <div className="todo-container">
+          <h3>dones:</h3>
+          <TodoList todos={doneTodos} />
+        </div>
+      </>
+    );
+  } else if (todos.length === 0 && !error) {
+    return (
+      <>
+        <ToDoForm setError={setError} />
+        <h1 className="loadingSpinner">
+          Found no todos
+          <LiaPoopSolid />
+        </h1>
+      </>
+    );
+  }
 };
 
 export default TodoSection;
