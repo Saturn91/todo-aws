@@ -1,12 +1,10 @@
 import React, { useContext } from "react";
 import { BsFillTrash3Fill } from "react-icons/bs";
 import { deleteTodo, patchTodo } from "../api/apiRequests";
-import { ApiStateContext, TodoContext } from "../App";
+import { TodoContext } from "../App";
 
 const ToDoItem = ({ todo }) => {
   const [todos, setTodos] = useContext(TodoContext);
-  // eslint-disable-next-line no-unused-vars
-  const [_, setApiState] = useContext(ApiStateContext);
 
   return (
     <li key={todo.ID} className="todo-item">
@@ -35,8 +33,7 @@ const ToDoItem = ({ todo }) => {
           const response = await deleteTodo(todo);
           if (!response.ok) {
             console.error("something went wrong...");
-            setTodos({ ...todos, todo });
-            setApiState({ error: response.message });
+            setTodos([...todos, todo]);
           }
         }}
         className="delete-button"
