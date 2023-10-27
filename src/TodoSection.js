@@ -23,6 +23,7 @@ const TodoSection = () => {
 
   useEffect(() => {
     const load = async () => {
+      setIsLoading(true);
       const response = await getTodo();
       if (response.ok) {
         const data = await response.json();
@@ -30,6 +31,8 @@ const TodoSection = () => {
       } else {
         setError(response.error);
       }
+
+      setIsLoading(false);
     };
 
     load();
