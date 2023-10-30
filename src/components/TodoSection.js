@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
-import TodoList from "./components/TodoList";
+import TodoList from "./TodoList";
 import { LiaPoopSolid } from "react-icons/lia";
 import { FidgetSpinner } from "react-loader-spinner";
-import IconError from "./IconError.svg";
-import { TodoContext } from "./App";
-import { getTodo } from "./api/apiRequests";
-import ToDoForm from "./components/ToDoForm";
+import IconError from "../IconError.svg";
+import { TodoContext } from "../App";
+import { getTodo } from "../api/apiRequests";
+import ToDoForm from "./ToDoForm";
 
 const TodoSection = () => {
   const [error, setError] = useState(null);
@@ -37,8 +37,8 @@ const TodoSection = () => {
   }, [setTodos]);
 
   useEffect(() => {
-    setDoneTodos(todos.filter((todo) => !!todo.isDone));
     setActiveTodos(todos.filter((todo) => !todo.isDone));
+    setDoneTodos(todos.filter((todo) => !!todo.isDone));
   }, [todos]);
 
   if (error) {
@@ -67,28 +67,21 @@ const TodoSection = () => {
     return (
       <>
         <ToDoForm setError={setError} />
-        <div className="todo-container">
-          <h3>todo:</h3>
-          <TodoList todos={activeTodos} />
-        </div>
-
-        <div className="todo-container">
-          <h3>dones:</h3>
-          <TodoList todos={doneTodos} />
-        </div>
-      </>
-    );
-  } else if (todos.length === 0 && !error) {
-    return (
-      <>
-        <ToDoForm setError={setError} />
-        <h1 className="loadingSpinner">
-          Found no todos
-          <LiaPoopSolid />
-        </h1>
+        <TodoList todos={activeTodos} title="todo:" />
+        <TodoList todos={doneTodos} title="dones:" />
       </>
     );
   }
+
+  return (
+    <>
+      <ToDoForm setError={setError} />
+      <h1 className="loadingSpinner">
+        Found no todos
+        <LiaPoopSolid />
+      </h1>
+    </>
+  );
 };
 
 export default TodoSection;

@@ -1,7 +1,7 @@
 import "./style.css";
 import { useState } from "react";
 import Navbar from "./Navbar";
-import TodoSection from "./TodoSection";
+import TodoSection from "./components/TodoSection";
 import { createContext } from "react";
 
 export const TodoContext = createContext();
